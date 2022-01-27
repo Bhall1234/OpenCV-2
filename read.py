@@ -1,7 +1,7 @@
 import cv2 as cv
 
 # https://www.youtube.com/watch?v=oXlwWbU8l2o
-
+# https://www.analyticsvidhya.com/blog/2021/03/a-beginners-guide-to-image-similarity-using-python/
 # Reading Images
 
 # Takes a path to an image and returns image as matrix of pixels.
