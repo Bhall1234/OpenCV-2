@@ -1,11 +1,12 @@
-import cv2 as cv
+import cv2
+import sys
 
 # https://www.youtube.com/watch?v=oXlwWbU8l2o
 # https://www.analyticsvidhya.com/blog/2021/03/a-beginners-guide-to-image-similarity-using-python/
 # Reading Images
 
 # Takes a path to an image and returns image as matrix of pixels.
-img = cv.imread('Photos/board.png') 
+#img = cv.imread('Photos/board.png') 
 
 # Converting to grayscale
 #gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -16,8 +17,8 @@ img = cv.imread('Photos/board.png')
 #cv.imshow('Blur', blur)
 
 # Edge Cascade
-canny = cv.Canny(img, 125, 175)
-cv.imshow('Canny Edges', canny)
+#canny = cv.Canny(img, 125, 175)
+#cv.imshow('Canny Edges', canny)
 
 # Dilating the image
 #dilated = cv.dilate(canny, (7,7), iterations=3)
@@ -32,19 +33,19 @@ cv.imshow('Canny Edges', canny)
 #cv.imshow('Resized', resized)
 
 # Cropping
-cropped = img[50:200, 200:400]
-cv.imshow('Cropped', cropped)
+#cropped = img[50:200, 200:400]
+#cv.imshow('Cropped', cropped)
 
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-cv.imshow('Gray', gray)
+#gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+#cv.imshow('Gray', gray)
 
-canny = cv.Canny(img, 125, 175)
-cv.imshow('Canny Edges', canny)
+#canny = cv.Canny(img, 125, 175)
+#cv.imshow('Canny Edges', canny)
 
 # Displays image as a new window
-cv.imshow('Board', img)
+#cv.imshow('Board', img)
 
-cv.waitKey(0)
+#cv.waitKey(0)
 
 # Reading Videos
 
@@ -53,16 +54,36 @@ cv.waitKey(0)
 # This is pre-recorded video  
 # Download from https://universityoflincoln-my.sharepoint.com/personal/hcuayahuitl_lincoln_ac_uk/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fhcuayahuitl%5Flincoln%5Fac%5Fuk%2FDocuments%2FTSE2021%2FTeam8
 # Put the file in Videos folder!
-#capture = cv.VideoCapture('Videos/test1639658932.91.avi')
 
+
+cascPath = 'haarcascade_frontalface_default.xml'
+faceCascade = cv2.CascadeClassifier(cascPath)
+capture = cv2.VideoCapture(0)
 # Use while loop and read video frame by frame
 # Returns the frame, boolean says if it was succesful or not
-#while True:
-    #isTrue, frame = capture.read() # Grab frames
+while True:
+    isTrue, frame = capture.read() # Grab frames
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     #cv.imshow('Video', frame) # Display each frame
 
-    #if cv.waitKey(20) & 0xFF==ord('d'): # Break out whileloop 
-        #break #if letter d is pressed break.
+    faces = faceCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(30, 30),
+        flags=cv2.CASCADE_SCALE_IMAGE
+        #flags=cv2.cv.CV_HAAR_SCALE_IMAGE
+    )
 
-#capture.release()
-#cv.destroyAllWindows
+    # Draw a rectangle around the faces
+    for (x, y, w, h) in faces:
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+    # Display the resulting frame
+    cv2.imshow('Video', frame)
+
+    if cv2.waitKey(20) & 0xFF == ord('d'): # Break out whileloop 
+        break #if letter d is pressed break.
+
+capture.release()
+cv2.destroyAllWindows
